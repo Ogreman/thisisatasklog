@@ -38,7 +38,7 @@ class TaskHistory(db.Model):
             'id': self.id,
             'task': self.task,
             'result': self.result,
-            'tiime': self.time,
+            'time': self.time,
         }
 
     @classmethod
