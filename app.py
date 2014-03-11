@@ -25,6 +25,7 @@ class TaskHistory(db.Model):
     __tablename__ = "taskhistory"
     id = Column(Integer, primary_key=True, autoincrement=True)
     task = Column(String)
+    target = Column(String)
     result = Column(Integer)
     time = Column(DateTime)
 
@@ -37,6 +38,7 @@ class TaskHistory(db.Model):
         return {
             'id': self.id,
             'task': self.task,
+            'target': self.target,
             'result': self.result,
             'time': self.time,
         }
@@ -56,6 +58,7 @@ def logs():
     if request.method == 'POST':
         log = TaskHistory(
             task=request.data.get('task', ''),
+            target=request.data.get('target', ''),
             result=request.data.get('result', 0),
             time=request.data.get('time', ''),
         )
