@@ -10,7 +10,7 @@ from flask.ext.api.renderers import HTMLRenderer
 from flask.ext.api.exceptions import APIException
 from flask.ext.sqlalchemy import SQLAlchemy
 
-from sqlalchemy import Column, String, Integer, DateTime
+from sqlalchemy import Column, String, Integer, DateTime, desc
 from unipath import Path
 
 
@@ -56,7 +56,9 @@ class TaskHistory(db.Model):
     @classmethod
     def get_targets(self):
         return [
-            log.to_json() for log in TaskHistory.query.distinct(TaskHistory.target)
+            log.to_json() for log in TaskHistory.query.order_by(
+                desc(TaskHistory.time)
+            ).distinct(TaskHistory.target)
         ]
 
 
