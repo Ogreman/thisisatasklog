@@ -11,13 +11,17 @@ from flask.ext.api.exceptions import APIException
 from flask.ext.sqlalchemy import SQLAlchemy
 
 from sqlalchemy import Column, String, Integer, DateTime
+from unipath import Path
+
+
+TEMPLATE_DIR = Path(__file__).ancestor(1).child("templates")
 
 app = FlaskAPI(__name__)
 app.config.update(
     SQLALCHEMY_DATABASE_URI=os.environ['DATABASE_URL'],
+    template_folder=TEMPLATE_DIR,
 )
 db = SQLAlchemy(app)
-
 
 
 class TaskHistory(db.Model):
@@ -49,6 +53,14 @@ class TaskHistory(db.Model):
             log.to_json() for log in TaskHistory.query.all()
         ]
 
+    @classmethod
+    def get_targets(self):
+        return [
+            log.to_json() for log in TaskHistory.query(
+                TaskHistory.target
+            ).distinct()
+        ]
+
 
 @app.route("/api/", methods=['GET', 'POST'])
 def logs():
@@ -66,6 +78,16 @@ def logs():
         db.session.commit()
         return log.to_json(), status.HTTP_201_CREATED
     return TaskHistory.get_tasks(), status.HTTP_200_OK
+
+
+@app.route("/", methods=['GET'])
+def index():
+    return render_template("index.html")
+
+
+@app.route("/api/targets/", methods=['GET'])
+def status():
+    return TaskHistory.get_targets(), status.HTTP_200_OK
 
 
 if __name__ == "__main__":
