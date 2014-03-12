@@ -56,9 +56,7 @@ class TaskHistory(db.Model):
     @classmethod
     def get_targets(self):
         return [
-            log.to_json() for log in TaskHistory.query(
-                TaskHistory.target
-            ).distinct()
+            log.to_json() for log in TaskHistory.query.distinct(TaskHistory.target)
         ]
 
 
@@ -87,7 +85,7 @@ def index():
 
 
 @app.route("/api/targets/", methods=['GET'])
-def status():
+def statuses():
     return TaskHistory.get_targets(), status.HTTP_200_OK
 
 
