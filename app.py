@@ -81,6 +81,7 @@ def logs():
 
 
 @app.route("/", methods=['GET'])
+@set_renderers([HTMLRenderer])
 def index():
     return render_template("index.html")
 
