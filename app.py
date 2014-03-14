@@ -1,6 +1,7 @@
 # app.py
 
 import os
+from datetime import datetime
 
 from flask import request, url_for, render_template
 
@@ -57,10 +58,10 @@ def logs():
     """
     if request.method == 'POST':
         log = TaskHistory(
-            task=request.data.get('task', ''),
-            target=request.data.get('target', ''),
+            task=request.data.get('task', 'NA'),
+            target=request.data.get('target', 'NA'),
             result=request.data.get('result', 0),
-            time=request.data.get('time', ''),
+            time=request.data.get('time', datetime.now()),
         )
         db.session.add(log)
         db.session.commit()
