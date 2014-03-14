@@ -13,12 +13,12 @@ from flask.ext.sqlalchemy import SQLAlchemy
 
 from sqlalchemy import Column, String, Integer, DateTime
 
+
 app = FlaskAPI(__name__)
 app.config.update(
     SQLALCHEMY_DATABASE_URI=os.environ['DATABASE_URL'],
 )
 db = SQLAlchemy(app)
-
 
 
 class TaskHistory(db.Model):
