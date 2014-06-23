@@ -16,7 +16,7 @@ from sqlalchemy import Column, String, Integer, DateTime
 
 app = FlaskAPI(__name__)
 app.config.update(
-    SQLALCHEMY_DATABASE_URI=os.environ['DATABASE_URL'],
+    SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL', 'sqlite:///dev.db'),
 )
 db = SQLAlchemy(app)
 
@@ -49,6 +49,18 @@ class TaskHistory(db.Model):
         return [
             log.to_json() for log in TaskHistory.query.all()
         ]
+
+
+@app.route("/api/check/")
+def check():
+    max_rows = int(os.environ.get('MAX_DB_ROWS', 10000))
+    logs = TaskHistory.query.all()[:-max_rows]
+    for log in logs:
+        db.session.delete(log)
+    db.session.commit()
+    return {
+        'message': 'Removed {n} rows'.format(n=len(logs))
+    }, status.HTTP_200_OK
 
 
 @app.route("/api/", methods=['GET', 'POST'])
