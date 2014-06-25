@@ -59,7 +59,7 @@ def check():
         db.session.delete(log)
     db.session.commit()
     return {
-        'message': 'Removed {n} rows'.format(n=len(logs))
+        'removed': len(logs),
     }, status.HTTP_200_OK
 
 
